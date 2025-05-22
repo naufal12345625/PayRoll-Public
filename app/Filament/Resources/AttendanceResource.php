@@ -17,15 +17,15 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-clipboard-document-check';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
                 Forms\Components\TextInput::make('schedule_latitude')
                     ->required()
                     ->numeric(),
@@ -53,34 +53,36 @@ class AttendanceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('schedule_latitude')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('schedule_longitude')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('schedule_start_time'),
-                Tables\Columns\TextColumn::make('schedule_end_time'),
-                Tables\Columns\TextColumn::make('latitude')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('start_time'),
-                Tables\Columns\TextColumn::make('end_time'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Tanggal')
+                ->date()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('user.name')
+                ->label('Pegawai')
+                ->sortable(),
+            Tables\Columns\TextColumn::make('start_time')
+                ->label('Waktu Datang'),
+            Tables\Columns\TextColumn::make('end_time')
+                ->label('Waktu Pulang'),
+            Tables\Columns\TextColumn::make('work_duration')
+                ->label('Durasi Kerja')
+                ->getStateUsing(function ($record) {
+                    return $record->workDuration();
+                }),
+            Tables\Columns\TextColumn::make('is_late')
+                ->label('Status')
+                ->badge()
+                ->getStateUsing(function ($record) {
+                    return $record->isLate() ? 'Terlambat' : 'Tepat Waktu';
+                })
+                ->color(fn(string $state): string => match ($state) {
+                    'Tepat Waktu' => 'success',
+                    'Terlambat' => 'danger',
+                })
+                ->description(function (Attendance $record) {
+                    return 'Durasi: ' . $record->workDuration();
+                }),
+        ])
             ->filters([
                 //
             ])

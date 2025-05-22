@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleResource extends Resource
 {
@@ -27,6 +28,7 @@ class ScheduleResource extends Resource
                 ->schema([
                     Forms\Components\Section::make()
                     ->schema([
+                        Forms\Components\Toggle::make('is_banned'),
                         Forms\Components\Select::make('user_id')
                             ->relationship('user', 'name')
                             ->searchable()
@@ -60,6 +62,8 @@ class ScheduleResource extends Resource
                 Tables\Columns\TextColumn::make('office.name')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\ToggleColumn::make('is_banned')
+                    ->hidden(fn () => !Auth::user()->hasRole('super_admin')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

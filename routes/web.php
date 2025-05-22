@@ -12,5 +12,5 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/presensi', Presensi::class)->name('presensi');
+    Route::get('/presensi', Presensi::class)->name('presensi')->middleware('isLeave');
 });

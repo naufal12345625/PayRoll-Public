@@ -9,9 +9,9 @@
                         <p><strong>Kantor: </strong> {{ $schedule->office->name }}</p>
                         <p><strong>Shift: </strong> {{ $schedule->shift->name }} ({{ $schedule->shift->start_time }} - {{ $schedule->shift->end_time }})</p>
                         @if ($schedule->is_wfa)
-                            <p class="text-green-500"><strong>Status: </strong> WFA</p>
+                            <p class="text-green-500"><strong>Status: </strong>WFA</p>
                         @else
-                            <p><strong>Status: </strong> WFO</p>
+                            <p><strong>Status: </strong>WFO</p>
                         @endif
                     </div>
                 </div>
@@ -23,16 +23,15 @@
                     <div class="bg-gray-100 p-4 rounded">
                         <h4 class="text-l font-bold mb-2">Jam Keluar</h4>
                         <p><strong>{{ $attendance->end_time ?? '-' }}</strong></p>
-                    </div> 
+                    </div>
                 </div>
-
                 <div>
                     <h2 class="text-2xl font-bold mb-2">Presensi</h2>
                     <div id="map" class="mb-4 border border-gray-300 rounded" wire:ignore></div>
                     <form class="flex justify-between" wire:submit='store' enctype="multipart/form-data">
-                        <button type="button" onclick="tagLocation()" class="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-400 transition">Tag Location</button>
-                        @if ($insideRadius)                     
-                            <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded cursor-pointer hover:bg-green-400 transition">Submit Presensi</button>
+                        <button type="button" onclick="tagLocation()" class="px-4 py-2 bg-blue-500 text-white rounded">Tag Location</button>
+                        @if ($insideRadius)
+                            <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded">Submit Presensi</button>
                         @endif
                     </form>
                 </div>
@@ -49,7 +48,7 @@
     const office = [{{ $schedule->office->latitude }}, {{ $schedule->office->longitude }}];
     const radius = {{ $schedule->office->radius }};
     let component;
-    const isWfa = @json($schedule->is_wfa); 
+    const isWfa = @json($schedule->is_wfa)
 
     document.addEventListener('livewire:initialized', function () {
         component = @this;
@@ -73,9 +72,6 @@
                 lat = position.coords.latitude;
                 lng = position.coords.longitude;
 
-                console.log('Latitude: ' + lat);
-                console.log('Longitude: ' + lng);
-                
                 if (marker) {
                     map.removeLayer(marker);
                 }
@@ -92,9 +88,9 @@
                         component.set('insideRadius', true);
                         component.set('latitude', lat);
                         component.set('longitude', lng);
-                        alert('Anda sedang WFA!')
+                        alert('Anda WFA!');
                     } else {
-                        alert('Anda berada di luar radius!')
+                        alert('Anda tidak berada di dalam radius kantor!');
                     }
                 }
             })

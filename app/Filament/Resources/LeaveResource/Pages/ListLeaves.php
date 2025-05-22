@@ -1,24 +1,20 @@
 <?php
 
-namespace App\Filament\Resources\AttendanceResource\Pages;
+namespace App\Filament\Resources\LeaveResource\Pages;
 
-use App\Filament\Resources\AttendanceResource;
+use App\Filament\Resources\LeaveResource;
 use Filament\Actions;
-use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class ListAttendances extends ListRecords
+class ListLeaves extends ListRecords
 {
-    protected static string $resource = AttendanceResource::class;
+    protected static string $resource = LeaveResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('presensi')
-                ->url('/presensi')
-                ->color('success'),
             Actions\CreateAction::make(),
         ];
     }
